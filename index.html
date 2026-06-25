@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>志愿填报推荐台</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="data/admissions.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Volunteer Planner</p>
+          <h1>志愿填报推荐台</h1>
+        </div>
+        <div class="top-actions">
+          <span id="dataBadge" class="data-badge">数据载入中</span>
+          <a class="source-link" href="https://www.nm.zsks.cn/" target="_blank" rel="noreferrer">内蒙古招生考试院</a>
+        </div>
+      </header>
+
+      <main class="planner-layout">
+        <section class="input-surface" aria-label="输入区">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Input</p>
+              <h2>输入信息</h2>
+            </div>
+            <span class="fixed-count">冲 10 / 稳 20 / 保 10</span>
+          </div>
+
+          <form id="plannerForm" class="form-grid">
+            <label>
+              <span>考试地区</span>
+              <select id="regionInput" name="region">
+                <option value="内蒙古">内蒙古</option>
+                <option value="其他地区" disabled>其他地区需导入数据</option>
+              </select>
+            </label>
+
+            <label>
+              <span>高考分数</span>
+              <input id="scoreInput" name="score" type="number" min="0" max="750" value="520" required>
+            </label>
+
+            <label>
+              <span>全区位次</span>
+              <input id="rankInput" name="rank" type="number" min="1" placeholder="例如 18500">
+            </label>
+
+            <fieldset class="segmented">
+              <legend>科类</legend>
+              <label>
+                <input type="radio" name="subject" value="physics" checked>
+                <span>物理类</span>
+              </label>
+              <label>
+                <input type="radio" name="subject" value="history">
+                <span>历史类</span>
+              </label>
+            </fieldset>
+
+            <label class="wide">
+              <span>目标地区分类</span>
+              <select id="targetRegionInput" name="targetRegion">
+                <option value="all">全部地区</option>
+                <option value="developed">经济发达地区（北京 / 天津 / 浙江 / 上海 / 西安 / 广州 / 福建 / 江苏）</option>
+                <option value="beijing">北京</option>
+                <option value="tianjin">天津</option>
+                <option value="zhejiang">浙江</option>
+                <option value="shanghai">上海</option>
+                <option value="xian">西安</option>
+                <option value="guangzhou">广州</option>
+                <option value="fujian">福建</option>
+                <option value="jiangsu">江苏</option>
+                <option value="other">其他地区</option>
+              </select>
+            </label>
+
+            <label class="wide">
+              <span>专业关键词</span>
+              <input id="majorInput" name="major" type="search" placeholder="计算机、临床、法学...">
+            </label>
+
+            <div class="button-row wide">
+              <button class="primary" type="submit">生成推荐</button>
+              <button class="ghost" id="resetBtn" type="button">重置</button>
+              <label class="import-btn">
+                导入补充数据
+                <input id="importInput" type="file" accept=".csv,.json">
+              </label>
+            </div>
+          </form>
+
+          <div id="qualityPanel" class="quality-panel" aria-live="polite"></div>
+        </section>
+
+        <section class="output-surface" aria-label="输出区">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Output</p>
+              <h2>推荐结果</h2>
+            </div>
+            <button id="expandAllBtn" class="icon-button" type="button" title="展开或收起专业表">展开</button>
+          </div>
+
+          <div id="summaryCards" class="summary-grid"></div>
+
+          <nav class="tabs" aria-label="推荐类别">
+            <button class="tab active" data-band="all" type="button">全部</button>
+            <button class="tab" data-band="rush" type="button">冲</button>
+            <button class="tab" data-band="steady" type="button">稳</button>
+            <button class="tab" data-band="safe" type="button">保</button>
+          </nav>
+
+          <div id="results" class="results" aria-live="polite"></div>
+        </section>
+      </main>
+
+      <section class="source-dock">
+        <div>
+          <p class="eyebrow">Sources</p>
+          <h2>数据来源</h2>
+        </div>
+        <div id="sourceList" class="source-list"></div>
+      </section>
+    </div>
+  </body>
+</html>
