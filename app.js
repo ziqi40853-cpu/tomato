@@ -35,6 +35,34 @@
     { id: "fujian", label: "福建", patterns: [/福建|厦门|福州|泉州|漳州|莆田|三明|龙岩|宁德|武夷/] },
     { id: "jiangsu", label: "江苏", patterns: [/江苏|南京|苏州|无锡|常州|镇江|扬州|南通|泰州|徐州|盐城|淮安|连云港|宿迁/] }
   ];
+  var SCHOOL_TIER_RULES = [
+    {
+      label: "C9 / 顶尖985",
+      priority: 0,
+      score: 100,
+      names: ["北京大学", "清华大学", "复旦大学", "上海交通大学", "浙江大学", "南京大学", "中国科学技术大学", "哈尔滨工业大学", "西安交通大学"]
+    },
+    {
+      label: "985 / 强双一流",
+      priority: 1,
+      score: 86,
+      names: ["中国人民大学", "北京航空航天大学", "北京理工大学", "中国农业大学", "北京师范大学", "中央民族大学", "南开大学", "天津大学", "大连理工大学", "东北大学", "吉林大学", "同济大学", "华东师范大学", "东南大学", "厦门大学", "山东大学", "中国海洋大学", "武汉大学", "华中科技大学", "湖南大学", "中南大学", "中山大学", "华南理工大学", "四川大学", "电子科技大学", "重庆大学", "西北工业大学", "西北农林科技大学", "兰州大学", "国防科技大学"]
+    },
+    {
+      label: "211 / 双一流",
+      priority: 2,
+      score: 72,
+      names: ["北京交通大学", "北京工业大学", "北京科技大学", "北京化工大学", "北京邮电大学", "北京林业大学", "北京协和医学院", "北京中医药大学", "首都师范大学", "北京外国语大学", "中国传媒大学", "中央财经大学", "对外经济贸易大学", "外交学院", "中国人民公安大学", "北京体育大学", "中央音乐学院", "中国音乐学院", "中央美术学院", "中央戏剧学院", "中国政法大学", "天津工业大学", "天津医科大学", "天津中医药大学", "华北电力大学", "河北工业大学", "太原理工大学", "山西大学", "内蒙古大学", "辽宁大学", "大连海事大学", "延边大学", "东北师范大学", "哈尔滨工程大学", "东北农业大学", "东北林业大学", "华东理工大学", "东华大学", "上海海洋大学", "上海中医药大学", "上海外国语大学", "上海财经大学", "上海体育学院", "上海音乐学院", "上海大学", "南京航空航天大学", "南京理工大学", "中国矿业大学", "南京邮电大学", "河海大学", "江南大学", "南京林业大学", "南京信息工程大学", "南京农业大学", "南京医科大学", "南京中医药大学", "中国药科大学", "南京师范大学", "苏州大学", "中国美术学院", "安徽大学", "合肥工业大学", "福州大学", "南昌大学", "郑州大学", "河南大学", "中国地质大学", "武汉理工大学", "华中农业大学", "华中师范大学", "中南财经政法大学", "湖南师范大学", "湘潭大学", "暨南大学", "广州医科大学", "广州中医药大学", "华南师范大学", "华南农业大学", "海南大学", "广西大学", "西南大学", "西南交通大学", "西南石油大学", "成都理工大学", "四川农业大学", "成都中医药大学", "西南财经大学", "贵州大学", "云南大学", "西藏大学", "西北大学", "西安电子科技大学", "长安大学", "陕西师范大学", "青海大学", "宁夏大学", "新疆大学", "石河子大学", "中国石油大学", "宁波大学", "南方科技大学", "上海科技大学", "海军军医大学", "空军军医大学"]
+    },
+    {
+      label: "行业 / 区域强校",
+      priority: 3,
+      score: 58,
+      names: ["燕山大学", "江苏大学", "浙江工业大学", "南京工业大学", "首都医科大学", "南方医科大学", "深圳大学", "杭州电子科技大学", "重庆邮电大学", "西安邮电大学", "桂林电子科技大学", "北京信息科技大学", "东北财经大学", "江西财经大学", "南京财经大学", "天津财经大学", "广东财经大学", "南京审计大学", "北京工商大学", "上海政法学院", "华东政法大学", "西南政法大学", "中国计量大学", "成都信息工程大学", "浙江理工大学", "浙江师范大学", "上海海事大学", "青岛大学", "扬州大学", "福建医科大学", "安徽理工大学", "南昌航空大学", "石家庄铁道大学", "中国人民警察大学", "广州大学", "上海立信会计金融学院"]
+    }
+  ];
+  var EMPLOYMENT_POSITIVE = /计算机|软件|电子|通信|信息|人工智能|数据|网络空间|电气|自动化|控制|机械|能源|航空|航天|交通|临床医学|口腔医学|医学影像|麻醉|法学|会计|审计|金融工程/;
+  var EMPLOYMENT_RISK = /新闻|传播|广告|哲学|历史|社会学|旅游|酒店|市场营销|工商管理|公共事业|环境|材料|化学|生物|农学|园艺|林学/;
 
   var els = {};
 
@@ -160,6 +188,7 @@
       .filter(function (school) { return school.subject === state.form.subject; })
       .map(function (school) {
         var regionCategory = classifySchoolRegion(school);
+        var schoolTier = classifySchoolTier(school);
         var years = summarizeYears(school);
         var lineScore = weighted(years, "score");
         if (!isFinite(lineScore)) { return null; }
@@ -169,6 +198,7 @@
         var rankGap = isFinite(lineRank) && rank ? lineRank - rank : null;
         var completeness = years.filter(function (item) { return item && isFinite(item.score); }).length;
         var latest = years.find(function (item) { return item && item.year === 2025; }) || years[0] || null;
+        var zxfProfile = buildZxfProfile(school, regionCategory, schoolTier, scoreGap, completeness);
 
         return {
           school: school,
@@ -181,6 +211,9 @@
           completeness: completeness,
           regionCategory: regionCategory,
           regionMatched: matchesTargetRegion(regionCategory, state.form.targetRegion),
+          schoolTier: schoolTier,
+          zxfProfile: zxfProfile,
+          zxfScore: zxfProfile.score,
           closeness: Math.abs(scoreGap) + (rankGap === null ? 0 : Math.min(18, Math.abs(rankGap) / 1600))
         };
       })
@@ -205,6 +238,60 @@
     return { id: "other", label: "其他地区", developed: false };
   }
 
+  function classifySchoolTier(school) {
+    var schoolNames = [school.name, school.rawName].map(normalizeSchoolText).filter(Boolean);
+    for (var i = 0; i < SCHOOL_TIER_RULES.length; i += 1) {
+      var rule = SCHOOL_TIER_RULES[i];
+      for (var j = 0; j < rule.names.length; j += 1) {
+        if (matchesAnySchoolName(schoolNames, normalizeSchoolText(rule.names[j]))) {
+          return { label: rule.label, priority: rule.priority, score: rule.score };
+        }
+      }
+    }
+    return { label: "普通本科", priority: 4, score: 42 };
+  }
+
+  function normalizeSchoolText(value) {
+    return String(value || "")
+      .replace(/[（(].*?[）)]/g, "")
+      .replace(/\s+/g, "");
+  }
+
+  function matchesAnySchoolName(schoolNames, tierName) {
+    return schoolNames.some(function (text) {
+      return isTierNameMatch(text, tierName);
+    });
+  }
+
+  function isTierNameMatch(text, tierName) {
+    if (text === tierName) { return true; }
+    if (text.indexOf(tierName) !== 0) { return false; }
+    var suffix = text.slice(tierName.length);
+    return /校区|克拉玛依/.test(suffix) && !/学院/.test(suffix);
+  }
+
+  function buildZxfProfile(school, regionCategory, schoolTier, scoreGap, completeness) {
+    var programText = (school.programs || []).slice(0, 80).map(function (program) {
+      return [program.major, program.note, program.batch].join(" ");
+    }).join(" ");
+    var publicBonus = school.ownership === "公办" ? 4 : -6;
+    var cityBonus = regionCategory.developed ? 8 : 0;
+    var employmentBonus = EMPLOYMENT_POSITIVE.test(programText) ? 7 : 0;
+    var riskPenalty = EMPLOYMENT_RISK.test(programText) ? -5 : 0;
+    var fitBonus = scoreGap >= -3 ? 4 : scoreGap >= -12 ? 2 : 0;
+    var completenessBonus = completeness * 2;
+    var score = schoolTier.score * 1.8 + cityBonus + employmentBonus + riskPenalty + publicBonus + fitBonus + completenessBonus;
+    var tags = [];
+
+    tags.push(schoolTier.label);
+    if (regionCategory.developed) { tags.push("城市机会"); }
+    if (school.ownership === "公办") { tags.push("公办稳"); }
+    if (EMPLOYMENT_POSITIVE.test(programText)) { tags.push("就业导向专业多"); }
+    if (EMPLOYMENT_RISK.test(programText)) { tags.push("需核验专业出口"); }
+
+    return { score: score, tags: tags };
+  }
+
   function matchesTargetRegion(category, targetRegion) {
     if (!targetRegion || targetRegion === "all") { return true; }
     if (targetRegion === "developed") { return !!category.developed; }
@@ -219,6 +306,12 @@
 
   function selectedRegionLabel() {
     return TARGET_REGION_LABELS[state.form.targetRegion] || TARGET_REGION_LABELS.all;
+  }
+
+  function countHighTierCandidates(candidates) {
+    return candidates.filter(function (item) {
+      return item.schoolTier && item.schoolTier.priority <= 2;
+    }).length;
   }
 
   function summarizeYears(school) {
@@ -283,43 +376,43 @@
     stage(rush, 10, function (item) {
       return item.lineScore > score && item.lineScore <= score + 38;
     }, function (a, b) {
-      return (a.lineScore - score) - (b.lineScore - score) || b.completeness - a.completeness;
+      return compareRankFirst(a, b, 10, true);
     });
 
     stage(rush, 10, function (item) {
       return item.lineScore > score;
     }, function (a, b) {
-      return (a.lineScore - score) - (b.lineScore - score);
+      return compareRankFirst(a, b, 18, true);
     });
 
     stage(rush, 10, function () {
       return true;
     }, function (a, b) {
-      return Math.abs(a.lineScore - score - 4) - Math.abs(b.lineScore - score - 4);
+      return compareRankFirst(a, b, 8, true);
     });
 
     stage(steady, 20, function (item) {
       return item.lineScore <= score + 6 && item.lineScore >= score - 28;
     }, function (a, b) {
-      return a.closeness - b.closeness || b.completeness - a.completeness;
+      return compareRankFirst(a, b, 0, true);
     });
 
     stage(steady, 20, function () {
       return true;
     }, function (a, b) {
-      return Math.abs(a.lineScore - score) - Math.abs(b.lineScore - score);
+      return compareRankFirst(a, b, 0, true);
     });
 
     stage(safe, 10, function (item) {
       return item.lineScore < score - 22;
     }, function (a, b) {
-      return b.lineScore - a.lineScore || b.completeness - a.completeness;
+      return compareRankFirst(a, b, -30, true);
     });
 
     stage(safe, 10, function () {
       return true;
     }, function (a, b) {
-      return b.scoreGap - a.scoreGap;
+      return compareRankFirst(a, b, -34, true);
     });
 
     rush.forEach(function (item) { item.band = "rush"; });
@@ -328,6 +421,24 @@
 
     var all = rush.concat(steady).concat(safe);
     return { all: all, rush: rush, steady: steady, safe: safe };
+  }
+
+  function compareRankFirst(a, b, targetGap, preferHigherScore) {
+    var tierDiff = a.schoolTier.priority - b.schoolTier.priority;
+    if (tierDiff) { return tierDiff; }
+
+    var scoreDiff = preferHigherScore ? b.lineScore - a.lineScore : a.lineScore - b.lineScore;
+    if (Math.abs(scoreDiff) > 0.01) { return scoreDiff; }
+
+    var zxfDiff = b.zxfScore - a.zxfScore;
+    if (Math.abs(zxfDiff) > 0.01) { return zxfDiff; }
+
+    var aTarget = Math.abs((a.lineScore - state.form.score) - targetGap);
+    var bTarget = Math.abs((b.lineScore - state.form.score) - targetGap);
+    if (aTarget !== bTarget) { return aTarget - bTarget; }
+
+    if (a.completeness !== b.completeness) { return b.completeness - a.completeness; }
+    return a.closeness - b.closeness;
   }
 
   function pickInto(target, limit, pool, chosen, sorter) {
@@ -357,6 +468,7 @@
       summaryCard("当前分数", formatScore(state.form.score)),
       summaryCard("参考位次", usedRank ? formatNumber(Math.round(usedRank)) : "缺数据"),
       summaryCard(state.form.targetRegion === "all" ? "候选院校" : "地区候选", formatNumber(selectedRegionCount(candidates))),
+      summaryCard("高层级候选", formatNumber(countHighTierCandidates(candidates))),
       summaryCard("位次校验", rankStatus)
     ].join("");
   }
@@ -375,6 +487,8 @@
       "<div><strong>地区</strong> " + escapeHtml(state.form.region) + " · " + subjectLabel + "</div>",
       "<div><strong>目标地区</strong> " + escapeHtml(regionLine) + "</div>",
       "<div><strong>算法</strong> 2025 投档分权重 45%，2024 权重 35%，2023 权重 20%；缺年自动归一化。</div>",
+      "<div><strong>排名优先</strong> 先按 C9/985、211/双一流、行业/区域强校、普通本科分层；同层级内优先看近三年投档线，再用城市、就业确定性、公办成本做辅助排序。</div>",
+      "<div><strong>张雪峰视角</strong> 就业倒推、城市机会、普通家庭确定性只做同层级微调，不覆盖学校层级。</div>",
       "<div><strong>位次</strong> " + (scoreRank ? "按 2025 一分一段估算为 " + formatNumber(scoreRank) + "。" : "当前分数未匹配到一分一段。") + "</div>",
       "<div><strong>边界</strong> 住宿条件和设施未在投档统计中披露，页面保留章程核验字段，不填虚构描述。</div>"
     ];
@@ -413,6 +527,8 @@
     var rankGap = item.rankGap === null ? "缺位次" : (item.rankGap >= 0 ? "优 " : "差 ") + formatNumber(Math.abs(Math.round(item.rankGap)));
     var scoreGap = item.scoreGap >= 0 ? "+" + formatScore(item.scoreGap) : formatScore(item.scoreGap);
     var regionLabel = item.regionCategory ? item.regionCategory.label : "其他地区";
+    var tierLabel = item.schoolTier ? item.schoolTier.label : "普通本科";
+    var zxfTags = item.zxfProfile && item.zxfProfile.tags ? item.zxfProfile.tags.join(" / ") : tierLabel;
 
     return [
       '<article class="school-card ' + (expanded ? "expanded" : "") + '">',
@@ -424,6 +540,7 @@
       '</div>',
       '<div class="school-actions">',
       '<span class="pill ' + bandClass + '">' + band + '</span>',
+      '<span class="pill public">' + escapeHtml(tierLabel) + '</span>',
       '<span class="pill public">' + escapeHtml(school.ownership || "待核验") + '</span>',
       '<span class="pill region">' + escapeHtml(regionLabel) + '</span>',
       '<button class="icon-button" type="button" data-toggle-school="' + escapeHtml(school.id) + '">' + (expanded ? "收起专业" : "查看专业") + '</button>',
@@ -434,6 +551,8 @@
       metric("分差", scoreGap),
       metric("参考位次", lineRank ? formatNumber(lineRank) : "缺数据"),
       metric("位次差", rankGap),
+      metric("学校层级", tierLabel),
+      metric("判断标签", zxfTags),
       metric("地区分类", regionLabel),
       metric("学校位置", school.location || "见专业表"),
       metric("学费", tuition),
