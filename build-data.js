@@ -327,10 +327,13 @@ async function build() {
 
   const output = "window.ADMISSION_DATA = " + JSON.stringify(payload) + ";";
   const outFile = path.join(dataDir, "admissions.js");
+  const publicOutFile = path.join(rootDir, "admissions.js");
   fs.writeFileSync(outFile, output, "utf8");
+  fs.writeFileSync(publicOutFile, output, "utf8");
 
   const programCount = schools.reduce(function(sum, school) { return sum + school.programs.length; }, 0);
   console.log("Wrote " + outFile);
+  console.log("Wrote " + publicOutFile);
   console.log("Schools: " + schools.length);
   console.log("Programs: " + programCount);
 }
